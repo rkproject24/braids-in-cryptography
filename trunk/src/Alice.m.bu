@@ -1,0 +1,54 @@
+
+s=open('dataN3.mat');
+n=s.dataN3.n;
+prmdata=s.dataN3.data;
+
+L=round(n/2);
+gLength=1;
+aLength=1;
+bLength=1;
+
+
+g = randi(n-1,1,gLength);
+a = randi(n-3,1,aLength)+1;
+%g=[1 2 3];
+%a=[1 1 ];
+ina = find(a>L-1);
+a(ina)=a(ina)-2*L+1;
+
+b = randi(n-3,1,aLength)+2;
+inb = find(b<=L);
+b(inb)=-2*L+b(inb)-1;
+%b=[3 -3 -3 -3];
+%aga = [inverse(a) g a];
+aga = normalform(n,[inverse(a) g a],prmdata);
+%braid_word(aga,'s');
+%bgb = [inverse(b) g b];
+bgb = normalform(n,[inverse(b) g b],prmdata);
+
+keya = [inverse(a) bgb a];
+%[posa,na]=normalform(n,keya,prmdata)
+
+keyb = [inverse(b) aga b];
+
+%[posb,nb]=normalform(n,keyb,prmdata)
+
+%Alice encryption
+keya=normalform(n,keya,prmdata)
+%nfa = normalform(n,keya,prmdata);
+%permutations(n,pos)
+%cana = left_normal(n,permutations(n,pos), prmdata)
+
+keyb=normalform(n,keyb,prmdata)
+eq = all(keya==keyb)
+%[ndelta, posb] = deltapos(n,keyb);
+%permutations(n,pos)
+%left_normal(n,permutations(n,posb), prmdata)
+% figure(1)
+% clc;
+% clf;
+% hold on;
+% axis([-0.1 1.1 -0.1 1.1]);
+% draw_braid(n,pos);
+% axis off
+
