@@ -1,0 +1,39 @@
+close all
+clear all
+
+s=open('dataN3.mat');
+data=s.dataN3;
+
+n=data.n;
+prmdata=data.data;
+L=round(n/2);
+gLength=1;
+
+g = randi(n-1,1,gLength);
+%encryption
+encrypt = createJob();
+createTask(encrypt, 'AliceEncrypt', 2, {data,L,g});
+createTask(encrypt, 'BobEncrypt', 2, {data,L,g});
+submit(encrypt);
+waitForState(encrypt);
+out = getAllOutputArguments(encrypt);
+a = out{1,1};
+aga=out{1,2};
+b = out{2,1};
+bgb=out{2,2};
+destroy(encrypt)
+%AliceDencrypt(data,a,bgb)
+%decryption
+dencrypt = createJob();
+createTask(dencrypt, 'AliceDencrypt',1,{data,a,bgb});
+createTask(dencrypt, 'BobDencrypt',1, {data,b,aga});
+%createTask(dencrypt,'EveDencrypt',1,{data,aga,bgb,g});
+submit(dencrypt);
+waitForState(dencrypt);
+keys = getAllOutputArguments(dencrypt);
+keya = keys{1}
+keyb = keys{2}
+%keye = keys{3}
+all(keya==keyb)
+
+EveDencrypt(data,aga,bgb,g)

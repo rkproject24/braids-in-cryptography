@@ -1,0 +1,26 @@
+prmdata(1)=struct('permutation',[1 2 3 4],'braid',[],'startingSet',[],'finishingSet',[]);
+prmdata(2)=struct('permutation',[1 2 4 3],'braid',[3],'startingSet',[3],'finishingSet',[3]);
+prmdata(3)=struct('permutation',[1 3 2 4],'braid',[2],'startingSet',[2],'finishingSet',[2]);
+prmdata(4)=struct('permutation',[1 3 4 2],'braid',[2 3],'startingSet',[2],'finishingSet',[3]);
+prmdata(5)=struct('permutation',[1 4 2 3],'braid',[3 2],'startingSet',[3],'finishingSet',[2]);
+prmdata(6)=struct('permutation',[1 4 3 2],'braid',[2 3 2],'startingSet',[2 3],'finishingSet',[2 3]);
+prmdata(7)=struct('permutation',[2 1 3 4],'braid',[1],'startingSet',[1],'finishingSet',[1]);
+prmdata(8)=struct('permutation',[2 1 4 3],'braid',[3 1],'startingSet',[1 3],'finishingSet',[1 3]);
+prmdata(9)=struct('permutation',[2 3 1 4],'braid',[1 2],'startingSet',[1],'finishingSet',[2]);
+prmdata(10)=struct('permutation',[2 3 4 1],'braid',[1 2 3],'startingSet',[1],'finishingSet',[3]);
+prmdata(11)=struct('permutation',[2 4 1 3],'braid',[3 1 2],'startingSet',[1 3],'finishingSet',[2]);
+prmdata(12)=struct('permutation',[2 4 3 1],'braid',[1 2 3 2],'startingSet',[1 3],'finishingSet',[2 3]);
+prmdata(13)=struct('permutation',[3 1 2 4],'braid',[2 1],'startingSet',[2],'finishingSet',[1]);
+prmdata(14)=struct('permutation',[3 1 4 2],'braid',[2 3 1],'startingSet',[2],'finishingSet',[1 3]);
+prmdata(15)=struct('permutation',[3 2 1 4],'braid',[1 2 1],'startingSet',[1 2],'finishingSet',[1 2]);
+prmdata(16)=struct('permutation',[3 2 4 1],'braid',[1 2 3 1],'startingSet',[1 2],'finishingSet',[1 3]);
+prmdata(17)=struct('permutation',[3 4 1 2],'braid',[2 3 1 2],'startingSet',[2],'finishingSet',[2]);
+prmdata(18)=struct('permutation',[3 4 2 1],'braid',[2 1 2 3 2],'startingSet',[1 2],'finishingSet',[2 3]);
+prmdata(19)=struct('permutation',[4 1 2 3],'braid',[3 2 1],'startingSet',[3],'finishingSet',[1]);
+prmdata(20)=struct('permutation',[4 1 3 2],'braid',[3 2 3 1],'startingSet',[2 3],'finishingSet',[1 3]);
+prmdata(21)=struct('permutation',[4 2 1 3],'braid',[3 2 1 2],'startingSet',[1 3],'finishingSet',[1 2]);
+prmdata(22)=struct('permutation',[4 2 3 1],'braid',[1 2 3 2 1],'startingSet',[1 3],'finishingSet',[1 3]);
+prmdata(23)=struct('permutation',[4 3 1 2],'braid',[2 1 3 2 1],'startingSet',[2 3],'finishingSet',[1 2]);
+prmdata(24)=struct('permutation',[4 3 2 1],'braid',[1 2 1 3 2 1],'startingSet',[1 2 3],'finishingSet',[1 2 3]);
+
+dataN3 = struct('n',3, 'data', prmdata);
