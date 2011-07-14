@@ -1,7 +1,7 @@
 close all
 clear all
 
-disp('Ko et all protocol')
+disp('Ko et al. protocol')
 disp(' ')
 %%data
 s=open('dataN3.mat');
