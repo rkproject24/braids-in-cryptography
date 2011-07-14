@@ -2,8 +2,7 @@
 
 = Presentation of Ko _et al._ key agreement protocol =
 
-Add your content here.
-
+\in
 
 = Details =
 
