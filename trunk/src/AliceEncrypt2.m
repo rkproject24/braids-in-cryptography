@@ -15,7 +15,7 @@ disp('Alice: calculating b_i^{x}...')
 m=size(b,1);
 sz=[];
 for i=1:m
-    sz(i) = size(normalform(n,[inverse(x) b(i,find(b(i,:))) x],prmdata),1);
+    sz(i) = size(normalform(n,[inverse(x) b(i,find(b(i,:))) x],prmdata),2);
 end
 bx=zeros(m,max(sz));
 for i=1:m

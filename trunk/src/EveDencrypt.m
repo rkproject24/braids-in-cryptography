@@ -6,7 +6,8 @@ h = bgb;
 nfh = bgb;
 m=[];
 
-disp('Eve: calculating a')
+disp('Eve: calculating a with brute force...')
+t1=tic;
 sm=1;
 flag=1;
 i=0;
@@ -29,6 +30,7 @@ while (flag)
     end
     i=i+1;
 end
+time=toc(t1)
 a = m(j,:);
 
 drawfigure('Eve',dflag,'a',a,n)
@@ -37,6 +39,6 @@ keye=[inverse(a) bgb a];
 keye=normalform(data.n,keye,data.data);
 keye=keye(find(keye>0));
 
-disp(['key' braid_word(keye,'\sigma')])
+disp(['key=' braid_word(keye,'\sigma')])
 drawfigure('Eve',dflag,'key',keye,data.n)
 
