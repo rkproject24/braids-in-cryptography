@@ -1,44 +1,14 @@
 function [keye] = EveDencrypt2(data,a,b,ay,bx,dflag)
-keye=[];
-disp('Eve: does not do anything yet!')
-% n=data.n;
-% prmdata=data.data;
-% x = g;
-% h = bgb;
-% nfh = bgb;
-% m=[];
-% 
-% disp('Eve: calculating a')
-% sm=1;
-% flag=1;
-% i=0;
-% while (flag)
-%     m=[[helpar(sm,-3) m];[helpar(sm,-2) m]; [helpar(sm,-1) m]; [helpar(sm,1) m] ; [helpar(sm,2) m] ;[helpar(sm,3) m]];
-%     sm=size(m,1);
-%     j=1;
-%     while(flag && j<=sm)
-%         nf=normalform(n,[inverse(m(j,:)) g m(j,:) ],prmdata);
-% %        nfh
-%         if length(nfh)==length(nf)
-%             if all(nf==nfh)
-%                 flag=0;
-%             else
-%                 j=j+1;
-%             end
-%         else
-%                j=j+1;
-%         end
-%     end
-%     i=i+1;
-% end
-% a = m(j,:);
-% 
-% drawfigure('Eve',dflag,'a',a,n)
-% disp('Eve: calculating key...')
-% keye=[inverse(a) bgb a];
-% keye=normalform(data.n,keye,data.data);
-% keye=keye(find(keye>0));
-% 
-% disp(['key' braid_word(keye,'\sigma')])
-% drawfigure('Eve',dflag,'key',keye,data.n)
-% 
+n=data.n;
+prmdata=data.data;
+disp('Eve: calculating x...')
+[flagx,x]=recDecrypt(n, prmdata, bx(1,find(bx(1,:))), b(1,find(b(1,:))), []);
+disp('Eve: calculating y...')
+[flagy,y]=recDecrypt(n, prmdata, ay(1,find(ay(1,:))), a(1,find(a(1,:))), []);
+drawfigure('Eve',dflag,'x',x,n)
+disp('Eve: calculating key...')
+keye = [inverse(x) inverse(y) x y ];
+keye=normalform(data.n,keye,data.data);
+keye=keye(find(keye>0));
+disp(['key=' braid_word(keye,'\sigma')])
+drawfigure('Eve',dflag,'key',keye,data.n)
