@@ -1,0 +1,417 @@
+\begin{comment}
+\documentclass[a4paper,11pt]{article}
+\usepackage{a4wide}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xgreek}
+\usepackage{color}
+% Greek fonts
+\RequirePackage[cm-default]{fontspec}
+\defaultfontfeatures{Mapping=tex-text}
+  % you may want to try: {FreeSerif} or {Times New Roman}
+\setmainfont{Ubuntu}
+  % you may want to try: {FreeSans} or {Arial}
+\setsansfont[Scale=MatchLowercase]{FreeMono}
+  % you may want to try: {FreeMono} or {Courier New}
+\setmonofont[Scale=MatchLowercase]{Liberation Mono}
+\newcommand\ntext[1]{\ensuremath{\mathsf{#1}}}
+\lstset{language=Matlab,
+        numbers=left, numberstyle=\tiny,
+        basicstyle=\ttfamily\footnotesize,
+        keywordstyle=\bfseries,
+        %basewidth=0.51em,
+        xleftmargin=10pt,
+        showspaces=false,
+        breaklines,
+        showstringspaces=false,
+        breakatwhitespace=true,
+        captionpos=b,
+        breakindent=34.25ex,
+        belowskip=5pt,
+        escapeinside={@}{@}
+        }
+
+
+\begin{document}
+\end{comment}
+\subsection{Κανονική Μορφή}
+
+Για να υπολογίσουμε την Garside κανονική μορφή ενός στοιχείου $ b=\sigma_1\sigma_2\dots \sigma_n \in B_n$
+χρειαζόμαστε για κάθε permutation να υπολογίσουμε το αρχικό και το τελικό τμήμα.
+Επιπλέον η κανονική μορφή έχει την μορφή $\Delta^{u}p_1\dots p_k$, όπου $ p_i $ permutations. Για να μπορούμε να κάνουμε πράξεις μεταξύ στοιχείων αναπαριστούμε το στοιχείο $ \Delta$ με 
+το Braid $ (\sigma_1\dots \sigma_n)(\sigma_1\dots \sigma_{n-1}) \dots \sigma_1 $ και κάθε $ p_i $ με ένα μοναδικό braid. 
+Για να μπορέσουμε να αντιστοιχίσουμε κάθε permutation με ένα μοναδικό braid καθώς και για να αποφύγουμε τον πολλαπλό υπολογισμό των αρχικών και τελικών τμημάτων χρησιμοποιούμε τον πίνακα \ntext{prmdata} στον οποίο οι πληροφορίες αυτές υπάρχουν.
+
+
+Ο υπολογισμός της Garside κανονικής μορφής γίνεται από την συνάρτηση \\
+\ntext{normalform(n,b,prmdata)} που δέχεται σαν ορίσματα την παράμετρο \ntext{n}, μια αναπαράσταση \ntext{b} του στοιχείου της $ B_n $ και τον τον πίνακα \ntext{prmdata}.
+Η συνάρτηση αυτή αρχικά βρίσκει τον εκθέτη \ntext{ndelta} του $ \Delta $ και το θετικό τμήμα \ntext{pos} του braid. Έπειτα, παράγει την αριστερή κανονική μορφή των permutations καλώντας την \ntext{leftnormal} και αναιρεί τις αρχικές εμφανίσεις του permutation [4 3 2 1] με τους εκθέτες του $ \Delta $. Τελικά, αντικαθιστά τον $ \Delta^{-\ntext{ndelta}} $ και κάθε permutation με τα αντίστοιχα στοιχεία του $ B_n $.
+\begin{lstlisting}
+function [nf] = normalform(n,b,prmdata)
+
+nf=[];
+[pos,ndelta] = deltapos(n,b);
+perm = left_normal(n,permutations(n,pos), prmdata);
+
+while(perm(1,:)==[4 3 2 1])
+    perm(1,:)=[];
+    ndelta=ndelta+1;
+end
+d=inverse(delta(n));
+for i=1:ndelta
+    nf = [nf d];
+end
+[s,c]=size(perm);
+for i = 1:s
+    nf = [nf prmdata(permutation_number(n,perm(i,:))).braid];
+end
+\end{lstlisting}
+
+Σαν παράδειγμα παραθέτουμε τον υπολογισμό της κανονικής μορφής του $ \sigma_1\sigma_3^{-1}\sigma_2 $:
+\begin{lstlisting}
+>> normalform(n,[1 -3 2],prmdata)
+pos =
+
+     3     3     2     1     3     2     2
+ndelta =
+
+     1
+perm =
+
+     4     3     1     2
+     2     3     1     4
+nf =
+
+    -1    -2    -1    -3    -2    -1     2     1     3     2     1     1     2
+\end{lstlisting}
+
+\subsection{Ko \textit{et al.} protocol}
+
+Το αρχείο cryptosystem.m υλοποιεί το πρωτόκολλο των Ko \textit{et al.}. Αρχικά ανοίγει το αρχείο dataN3.mat για να πάρει την παράμετρο $ n $ και τον κατάλληλο πίνακα δεδομένων. Με τον τρόπο αυτό το σύστημα παραμετροποιείται έτσι ώστε να λειτουργεί για διάφορα $ n $.
+
+Έπειτα καθορίζονται οι παράμετροι του συστήματος, όπως το $ L $, το επιθυμητό μέγεθος των μηκών των στοιχείων $ a,b,g $, τα οποία παράγονται τυχαία και η σημαία των σχημάτων \ntext{dflag}, η οποία όταν τεθεί σε 1 εμφανίζει σχηματικά όλα τα braids που παράγονται κατά την διάρκεια του υπολογισμού. 
+Τελικά γίνεται η κρυπτογράφηση και η αποκρυπτογράφηση, καλώντας τις αντίστοιχες συναρτήσεις. Παρατηρούμε ότι τα ορίσματα που δίνονται στις συναρτήσεις αποκρυπτογραφήσεις συμφωνούν με τις προδιαγραφές του συστήματος, δηλαδή, η συνάρτηση αποκρυπτογράφησης της Alice δέχεται σαν όρισμα το κρυφό κλειδί της Alice, \ntext{a}, η συνάρτηση αποκρυπτογράφησης του Bob δέχεται σαν όρισμα το κρυφό κλειδί του Bob, \ntext{b}, ενώ η συνάρτηση αποκρυπτογράφησης της Eve δέχεται σαν ορίσματα μόνο τα δημοσίως γνωστά δεδομένα.  
+\begin{lstlisting}
+%%data
+s=open('dataN3.mat');
+data=s.dataN3;
+
+%%parameters
+%if dflag=1 every braid will be dispayed in figure
+dflag=0;
+n=data.n;
+prmdata=data.data;
+L=round(n/2);
+gLength=3;
+aLenght=5;
+bLenght=4;
+g = randi(n-1,1,gLength);
+
+%%encryption
+[a,aga]=AliceEncrypt(data,L,g,aLenght,dflag);
+[b,bgb]=BobEncrypt(data,L,g,bLenght,dflag);
+%decryption
+keya = AliceDencrypt(data,a,bgb,dflag);
+keyb = BobDencrypt(data,b,aga,dflag);
+keye = EveDencrypt(data,aga,bgb,g,dflag);
+keye1 = EveDencrypt1(data,aga,bgb,g,dflag);
+\end{lstlisting}
+
+\subsubsection{Συναρτήσεις Κρυπτογράφησης}
+
+Οι συναρτήσεις κρυπτογράφησης της Alice και του Bob είναι παρόμοιες, για τον λόγο αυτό παραθέτουμε μόνο της Alice.
+
+Η Alice διαλέγει τυχαία ένα κλειδί (το οποίο τροποποιείται ώστε να αποτελείται από στοιχεία $ \sigma_i,\in \{ -(L-1),\dots,-1,1,\dots,L-1 \} $) και υπολογίζει την κανονική μορφή του στοιχείου $ a^{-1}ga $ χρησιμοποιώντας την συνάρτηση \ntext{expbraid}, ο κώδικας της οποίας ακολουθεί. Τελικά επιστρέφονται το στοιχείο αυτό και το $ a $, αφού είναι απαραίτητα για την αποκρυπτογράφηση.
+
+\begin{lstlisting}
+function [res]=expbraid(base,expon)
+    res=[inverse(expon) base expon];
+\end{lstlisting}
+
+\begin{lstlisting}
+function [a,aga] = AliceEncrypt(data,L,g,aLength,dflag)
+
+n = data.n;
+prmdata=data.data;
+
+disp('Alice: chossing a...')
+a = randi(n-3,1,aLength)+1;
+ina = find(a>L-1);
+a(ina)=a(ina)-2*L+1;
+
+%calculating a^{-1}ga
+aga = normalform(n,expbraid(g,a),prmdata);
+\end{lstlisting}  
+
+\subsubsection{Συναρτήσεις Αποκρυπτογράφησης}
+
+Οι συναρτήσεις αποκρυπτογράφησης της Alice και του Bob είναι παρόμοιες, για τον λόγο αυτό παραθέτουμε μόνο της Alice.
+
+Στην συνάρτηση αποκρυπτογράφησης η Alice υπολογίζει το κλειδί της ως \\$ k_a = a^{-1}b^{-1}gba $, όπου το $b^{-1}gb$ το δέχεται σαν όρισμα και επιστρέφει την κανονική του μορφή. Με τα νούμερα που χρησιμοποιούμε το κλειδί έχει ήδη μεγάλη έκταση, επιπλέον, το το αρχικό του τμήμα αποτελείται από κάποιο braid της μορφής $ \Delta^{-k} $, το οποίο δεν αυξάνει την πολυπλοκότητα του κλειδιού επειδή μπορεί εύκολα να αποκρυπτογραφηθεί. Για τον λόγο αυτό επιλέγουμε ως κλειδί να θεωρούμε μόνο το αρχικό τμήμα του $ k_a $.
+\begin{lstlisting}
+function [keya] = AliceDencrypt(data,a,bgb,dflag)
+keya =  expbraid(bgb,a);
+keya=normalform(data.n,keya,data.data);
+keya=keya(find(keya>0));
+\end{lstlisting}
+
+\subsubsection{Συναρτήσεις Επίθεσης}
+
+Έχουν υλοποιηθεί δύο συναρτήσεις επίθεσης και οι δύο ανάγονται στον υπολογισμό κάποιου ιδιωτικού κλειδιού (πχ. του $ a $) δοσμένου του δημόσιου (πχ. του $ a^{-1}ga $ και του $ g $).
+
+Η μια χρησιμοποιεί τον brute force τρόπο δοκιμάζοντας όλα τα πιθανά στοιχεία του $ B_n $ με αυξανόμενο μέγεθος. Ο κώδικας δεν έχει κάποιο ενδιαφέρον σημείο και για αυτό δεν θα τον παραθέσουμε.
+
+Η δεύτερη χρησιμοποιεί τον αλγόριθμο που περιγράψαμε στην ενότητα \ref{analysis} και η συνάρτηση αποκρυπτογράφησης παρατίθεται. Για τον υπολογισμό του ιδιωτικού κλειδιού χρησιμοποιείται η αναδρομική συνάρτηση \ntext{recDecrypt}. Επίσης έχει χρησιμοποιηθεί και συνάρτηση του Matlab που μετράει τον χρόνο που διαρκεί ο υπολογισμός του κλειδιού, ώστε να μπορέσουμε να τον συγκρίνουμε με αυτόν της brute force υλοποίησης.
+
+\begin{lstlisting}
+function [keye] = EveDencrypt1(data,aga,bgb,g,dflag)
+n=data.n;
+prmdata=data.data;
+
+%calculating a
+t1=tic;
+[flag,a]=recDecrypt(n, prmdata, aga, g, []);
+time=toc(t1)
+
+%calculating key
+keye=[inverse(a) bgb a];
+keye=normalform(data.n,keye,data.data);
+keye=keye(find(keye>0));
+\end{lstlisting}
+
+Η συνάρτηση \ntext{recDecrypt} κατασκευάζει αναδρομικά το $ a $. 
+Συγκεκριμένα, αν το όρισμά της $ k $ είναι τέτοιο ώστε $ a^{-1}ga=k^{-1}gk$ τότε επιστρέφει το $ k $, διαφορετικά επιλέγω τα τα $ i $ που ελαχιστοποιούν το μήκος της $ \sigma_i k a^{-1}ga k^{-1} \sigma_i^{-1}$. Αν το μήκος αυτό είναι μικρότερο του μήκους της  $ k a^{-1}ga k^{-1}$, τότε αντικαθιστώ το $ k $ με $ \sigma_ik $ και καλώ πάλι την συνάρτηση, διαφορετικά δηλώνω αποτυχία.
+
+\begin{lstlisting}
+function [flag,k]=recDecrypt(n, prmdata, aga, g, k)
+
+%given a^{-1}ga and a recursively calculates a
+
+nf=normalform(n,[inverse(k) g k],prmdata);
+nfh=aga;
+
+if length(nfh)==length(nf)
+    if all(nf==nfh)
+        flag=1;
+    else
+        flag=0;
+    end
+else
+    flag=0;
+end
+  
+if flag==0 
+    h=[k aga inverse(k)];
+    lh=lenE(h,n,prmdata);
+    l0=lh+1;
+    for i=-(n-1):-1
+        c(i+n,:)=lenE([i h -i],n,prmdata);
+    end
+    for i=1:n-1
+        c(i+n-1,:)=lenE([i h -i],n,prmdata);
+    end
+    [a,v]=min(c);
+    if (a<l0)
+        allv = find(c==a);
+        for j=1:length(allv)
+            v=allv(j);
+            if (v<n)
+                v=(v-n);
+            else
+                v=(v-n+1);
+            end
+        [b1,k]=recDecrypt(n,prmdata,aga,g,[v k]);
+        if (b1==1)
+            flag=1;
+            return
+        end
+        end
+    end
+end
+\end{lstlisting}
+
+Παρατηρήσαμε ότι στις περισσότερες περιπτώσεις η συνάρτηση αυτή υπολογίζει το ιδιωτικό κλειδί τουλάχιστον 3 φορές γρηγορότερα από τον απλό brute force αλγόριθμο. Το μειονέκτημα της είναι ότι κάποιες φορές μπορεί να μην τερματίσει.
+
+\subsubsection{Παράδειγμα εκτέλεσης}
+Ακολουθεί ένα παράδειγμα εκτέλεσης του κώδικα.
+
+\begin{lstlisting}
+>> cryptosystem
+Ko et al. protocol
+ 
+Encryption...
+Alice: chossing a...
+a=\sigma_{1}^{-4}
+Alice: calculating a^{-1}ga...
+a^{-1}ga=\sigma_{3}\sigma_{1}\sigma_{3}\sigma_{2}\sigma_{1}\sigma_{2}\sigma_{1}\sigma_{2}
+   \sigma_{3}\sigma_{1}^{2}\sigma_{2}\sigma_{3}\sigma_{2}\sigma_{1}^{2}\sigma_{2}\sigma_{3}
+   \sigma_{2}\sigma_{1}^{2}\sigma_{2}^{2}\sigma_{1}^{2}\sigma_{2}\sigma_{3}
+Bob: chossing b...
+b=\sigma_{3}^{4}
+Bob: calculating b^{-1}gb...
+b^{-1}gb=\sigma_{2}\sigma_{1}\sigma_{3}\sigma_{2}\sigma_{1}\sigma_{2}\sigma_{1}\sigma_{2}
+	\sigma_{3}\sigma_{2}^{2}\sigma_{1}\sigma_{3}\sigma_{2}\sigma_{1}\sigma_{2}\sigma_{3}^{5}
+ 
+Decryption...
+Alice: calculating key...
+key=a^{-1}(b^{-1}gb)a=\sigma_{2}\sigma_{1}\sigma_{2}\sigma_{3}\sigma_{2}^{2}\sigma_{1}\sigma_{3}
+    \sigma_{2}\sigma_{1}^{2}\sigma_{2}\sigma_{1}^{2}\sigma_{2}\sigma_{3}\sigma_{1}\sigma_{3}
+    \sigma_{2}\sigma_{1}\sigma_{2}^{2}\sigma_{1}\sigma_{2}\sigma_{3}\sigma_{2}^{2}\sigma_{1}^{2}
+    \sigma_{2}^{2}\sigma_{1}^{2}\sigma_{2}\sigma_{3}^{5}
+Bob: calculating key...
+key=b^{-1}(a^{-1}ga)b=\sigma_{2}\sigma_{1}\sigma_{2}\sigma_{3}\sigma_{2}^{2}\sigma_{1}\sigma_{3}
+    \sigma_{2}\sigma_{1}^{2}\sigma_{2}\sigma_{1}^{2}\sigma_{2}\sigma_{3}\sigma_{1}\sigma_{3}
+    \sigma_{2}\sigma_{1}\sigma_{2}^{2}\sigma_{1}\sigma_{2}\sigma_{3}\sigma_{2}^{2}\sigma_{1}^{2}
+    \sigma_{2}^{2}\sigma_{1}^{2}\sigma_{2}\sigma_{3}^{5}
+Eve: calculating a with brute force...
+
+time =
+
+  156.2322
+
+Eve: calculating key...
+key=\sigma_{2}\sigma_{1}\sigma_{2}\sigma_{3}\sigma_{2}^{2}\sigma_{1}\sigma_{3}\sigma_{2}
+    \sigma_{1}^{2}\sigma_{2}\sigma_{1}^{2}\sigma_{2}\sigma_{3}\sigma_{1}\sigma_{3}\sigma_{2}
+    \sigma_{1}\sigma_{2}^{2}\sigma_{1}\sigma_{2}\sigma_{3}\sigma_{2}^{2}\sigma_{1}^{2}
+    \sigma_{2}^{2}\sigma_{1}^{2}\sigma_{2}\sigma_{3}^{5}
+Eve: calculating a...
+
+time =
+
+   21.3587
+
+Eve: calculating key...
+key=\sigma_{2}\sigma_{1}\sigma_{2}\sigma_{3}\sigma_{2}^{2}\sigma_{1}\sigma_{3}\sigma_{2}
+    \sigma_{1}^{2}\sigma_{2}\sigma_{1}^{2}\sigma_{2}\sigma_{3}\sigma_{1}\sigma_{3}\sigma_{2}
+    \sigma_{1}\sigma_{2}^{2}\sigma_{1}\sigma_{2}\sigma_{3}\sigma_{2}^{2}\sigma_{1}^{2}
+    \sigma_{2}^{2}\sigma_{1}^{2}\sigma_{2}\sigma_{3}^{5}
+\end{lstlisting}
+
+\subsection{Anshel \textit{et al.} protocol}
+
+Το αρχείο cryptosystem2.m υλοποιεί το πρωτόκολλο των Anshel \textit{et al.}. Όπως και στο cryptosystem.m αρχικά ανοίγει το αρχείο dataN3.mat για να πάρει την παράμετρο $ n $ και τον κατάλληλο πίνακα δεδομένων.
+
+Έπειτα καθορίζονται οι παράμετροι του συστήματος, όπως τα $ k,m,a,b $ και η σημαία των σχημάτων \ntext{dflag}.
+
+Τελικά γίνεται η κρυπτογράφηση και η αποκρυπτογράφηση, καλώντας τις αντίστοιχες συναρτήσεις. Όπως και στο προηγούμενο πρωτόκολλο, τα ορίσματα που δίνονται στις συναρτήσεις αποκρυπτογράφησης συμφωνούν με τις προδιαγραφές του συστήματος.  
+\begin{lstlisting}
+%%data
+s=open('dataN3.mat');
+data=s.dataN3;
+
+%%parameters
+%if dflag=1 every braid will be dispayed in figure
+dflag=0;
+n=data.n;
+prmdata=data.data;
+k=randi(10,1,1);
+m=randi(10,1,1);
+a=randi(2*n-2,k,3)-n+1;
+b=randi(2*n-2,m,3)-n+1;
+
+%%encryption
+[xind,bx]=AliceEncrypt2(data,a,b,dflag);
+[yind,ay]=BobEncrypt2(data,a,b,dflag);
+
+%decryption
+keya = AliceDencrypt2(data,a,b,xind,ay,dflag);
+keyb = BobDencrypt2(data,a,b,yind,bx,dflag);
+keye = EveDencrypt2(data,a,b,ay,bx,dflag);
+\end{lstlisting}
+
+\subsection{Συναρτήσεις Κρυπτογράφησης}
+
+Οι συναρτήσεις κρυπτογράφησης της Alice και του Bob είναι παρόμοιες, για τον λόγο αυτό παραθέτουμε μόνο της Alice.
+
+Η Alice διαλέγει τυχαία $ k $ στοιχεία $ x_i, 1 \leq i \leq k $ και \ntext{xind}  που είναι ο δείκτης που καθορίζει ότι το $ x_{\ntext{xind}} $ είναι το ιδιωτικό κλειδί της. Έπειτα, υπολογίζει την κανονική μορφή των στοιχείων $bx_j= x_{\ntext{xind}}^{-1} b_j x_{\ntext{xind}}, 1 \leq i \leq m $ χρησιμοποιώντας την συνάρτηση \ntext{expbraid}. Τελικά επιστρέφονται o δείκτης \ntext{xind} και ένας πίνακας που περιέχει τα $ bx_j $, αφού είναι απαραίτητα για την αποκρυπτογράφηση.
+
+\begin{lstlisting}
+function [xind,bx] = AliceEncrypt2(data,a,b,dflag)
+
+n = data.n;
+prmdata=data.data;
+k=size(a,1);
+
+%chossing xind
+xind=randi(k,1,1);
+x=a(xind,:);
+x=x(find(x));
+
+%calculate bx
+m=size(b,1);
+sz=[];
+for i=1:m
+    sz(i) = size(normalform(n,[inverse(x) b(i,find(b(i,:))) x],prmdata),1);
+end
+bx=zeros(m,max(sz));
+for i=1:m
+    tmp=normalform(n,[inverse(x) b(i,find(b(i,:))) x],prmdata);
+    bx(i,1:length(tmp))=tmp;
+end
+\end{lstlisting}  
+
+\subsubsection{Συναρτήσεις Αποκρυπτογράφησης}
+
+Οι συναρτήσεις αποκρυπτογράφησης της Alice και του Bob είναι παρόμοιες, για τον λόγο αυτό παραθέτουμε μόνο της Alice.
+
+Στην συνάρτηση αποκρυπτογράφησης η Alice υπολογίζει το κλειδί της πολλαπλασιάζοντας το στοιχείο του $ bx $ με δείκτη $ xind$ με το $ x^{-1} $ και επιστρέφει το θετικό τμήμα της κανονικής του μορφής.
+\begin{lstlisting}
+function [keya] = AliceDencrypt2(data,a,b,indx,ay,dflag)
+
+x=a(indx,find(a(indx,:)));
+keya = [inverse(x) ay(indx,find(ay(indx,:)))];
+keya=normalform(data.n,keya,data.data);
+keya=keya(find(keya>0));
+\end{lstlisting}
+
+\subsection{Συνάρτηση Επίθεσης}
+
+Η συνάρτηση επίθεσης χρησιμοποιεί δύο φορές την συνάρτηση \ntext{recDecrypt}, μία για να υπολογίσει το $ x $ από τα $ b_1^x $ και το $ b_1 $ και μία για να υπολογίσει το $ y $ από τα $ a_1^y $ και $ a_1 $. Αν τα $ x $ και $ y $ είναι γνωστά, τότε το κλειδί μπορεί να υπολογιστεί εύκολα ως $ key=x^{-1}y^{-1}xy $. Σημειώνουμε ότι όπως και στην περίπτωση της επίθεσης στο πρωτόκολλο των Ko \textit{et al.} η επίθεση αυτή δεν επιτυγχάνει πάντα.
+\begin{lstlisting}
+function [keye] = EveDencrypt2(data,a,b,ay,bx,dflag)
+n=data.n;
+prmdata=data.data;
+
+%calculating x
+[flagx,x]=recDecrypt(n, prmdata, bx(1,find(bx(1,:))), b(1,find(b(1,:))), []);
+
+%calculating y
+[flagy,y]=recDecrypt(n, prmdata, ay(1,find(ay(1,:))), a(1,find(a(1,:))), []);
+
+keye = [inverse(x) inverse(y) x y ];
+keye=normalform(data.n,keye,data.data);
+keye=keye(find(keye>0));
+\end{lstlisting}
+
+
+\subsection{Παράδειγμα Εκτέλεσης}
+Ακολουθεί ένα παράδειγμα εκτέλεσης του κώδικα.
+
+\begin{lstlisting}
+>> cryptosystem2
+Anshel et al. Protocol
+ 
+Encryption...
+Alice: chossing x...
+x=a_{1}=\sigma_{1}^{-1}\sigma_{2}^{-1}
+Alice: calculating b_i^{x}...
+b_{1}^{x}=\sigma_{1}^{-1}
+Bob: chossing y...
+y=b_{1}=\sigma_{1}^{-1}
+Bob: calculating a_i^{y}...
+a_{1}^{y}=\sigma_{1}^{-1}\sigma_{2}^{-1}
+a_{2}^{y}=\sigma_{2}^{-1}\sigma_{3}^{2}
+a_{3}^{y}=\sigma_{1}^{-1}\sigma_{3}
+a_{4}^{y}=\sigma_{1}^{-1}\sigma_{2}^{-1}
+a_{5}^{y}=\sigma_{2}
+ 
+Decryption...
+Alice: calculating key...
+key=\sigma_{2}\sigma_{1}\sigma_{2}\sigma_{3}\sigma_{2}^{2}
+Bob: calculating key...
+key=\sigma_{2}\sigma_{1}\sigma_{2}\sigma_{3}\sigma_{2}^{2}
+Eve: calculating x...
+Eve: calculating y...
+Eve: calculating key...
+\end{lstlisting}
+%\end{document}

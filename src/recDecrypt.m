@@ -1,0 +1,45 @@
+function [flag,k]=recDecrypt(n, prmdata, aga, g, k)
+
+%given a^{-1}ga and a recursively calculates a
+
+nf=normalform(n,[inverse(k) g k],prmdata);
+nfh=aga;
+
+if length(nfh)==length(nf)
+    if all(nf==nfh)
+        flag=1;
+    else
+        flag=0;
+    end
+else
+    flag=0;
+end
+  
+if flag==0 
+    h=[k aga inverse(k)];
+    lh=lenE(h,n,prmdata);
+    l0=lh+1;
+    for i=-(n-1):-1
+        c(i+n,:)=lenE([i h -i],n,prmdata);
+    end
+    for i=1:n-1
+        c(i+n-1,:)=lenE([i h -i],n,prmdata);
+    end
+    [a,v]=min(c);
+    if (a<l0)
+        allv = find(c==a);
+        for j=1:length(allv)
+            v=allv(j);
+            if (v<n)
+                v=(v-n);
+            else
+                v=(v-n+1);
+            end
+        [b1,k]=recDecrypt(n,prmdata,aga,g,[v k]);
+        if (b1==1)
+            flag=1;
+            return
+        end
+        end
+    end
+end

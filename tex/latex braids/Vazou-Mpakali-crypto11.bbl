@@ -1,0 +1,70 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{JWCP96}
+
+\bibitem[AAG99]{Anshel99analgebraic}
+Iris Anshel, Michael Anshel, and Dorian Goldfeld.
+\newblock An algebraic method for public-key cryptography.
+\newblock 1999.
+
+\bibitem[BCM09]{basic}
+Simon~R. Blackburn, Carlos Cid, and Ciaran Mullan.
+\newblock {Group theory in cryptography}.
+\newblock June 2009.
+
+\bibitem[Bel07]{belk-2007}
+James Belk.
+\newblock Thompson's group f, 2007.
+
+\bibitem[EM94]{normaltheor}
+ELSAYED~A. ELRIFAI and HUGH~R. MORTON.
+\newblock Algorithms for positive braids.
+\newblock {\em Quarterly Journal of Mathematics}, 45:479--497, 1994.
+
+\bibitem[EPC{\etalchar{+}}92]{nfobs}
+David B.~A. Epstein, M.~S. Paterson, G.~W. Camon, D.~F. Holt, S.~V. Levy, and
+  W.~P. Thurston.
+\newblock {\em Word Processing in Groups}.
+\newblock A. K. Peters, Ltd., Natick, MA, USA, 1992.
+
+\bibitem[GAR]{normaf}
+DAVID GARBER.
+\newblock Braid group cryptography preliminary draft.
+
+\bibitem[Gar69]{attack}
+H.~Garside.
+\newblock The braid group and other groups.
+\newblock {\em Quarterly Journal of Mathematics}, 20:235--254, 1969.
+
+\bibitem[HS02]{Hattack}
+Dennis Hofheinz and Rainer Steinw.
+\newblock A practical attack on some braid group based cryptographic
+  primitives.
+\newblock In {\em in Public Key Cryptography, 6th International Workshop on
+  Practice and Theory in Public Key Cryptography, PKC 2003 Proceedings, Y.G.
+  Desmedt, ed., Lecture Notes in Computer Science 2567}, pages 187--198.
+  Springer, 2002.
+
+\bibitem[HT02]{length-basedattacks}
+J.~Hughes and A.~Tannenbaum.
+\newblock Length-based attacks for certain group based encryption rewriting
+  systems, 2002.
+
+\bibitem[JWCP96]{tom}
+W.~J.~Floyd J.~W.~Cannon and W.~R. Parry.
+\newblock Introductory notes on richard thompson’s groups.
+\newblock In {\em L’Enseignement Mathematique}, 1996.
+
+\bibitem[KLC{\etalchar{+}}00]{ko}
+Ki~Hyoung Ko, Sang~Jin Lee, Jung~Hee Cheon, Jae~Woo Han, Ju~sung Kang, and
+  Choonsik Park.
+\newblock New public-key cryptosystem using braid groups.
+\newblock In {\em Advances in cryptology—CRYPTO 2000 (Santa Barbara, CA),
+  166–183, Lecture Notes in Comput. Sci. 1880}, pages 166--183. Springer,
+  2000.
+
+\bibitem[MK06]{cf}
+Francesco~Matucci Martin~Kassabov.
+\newblock The simultaneous conjugacy problem in thompson’s group f.
+\newblock Cornall University Library, 2006.
+
+\end{thebibliography}

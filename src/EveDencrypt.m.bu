@@ -15,12 +15,12 @@ while (flag)
     sm=size(m,1);
     j=1;
     while(flag && j<=sm)
-        nf=normalform(n,[inverse(m(j,:)) g m(j,:)],prmdata);
+        nf=normalform(n,[inverse(m(j,:)) g m(j,:) ],prmdata);
 %        nfh
         if length(nfh)==length(nf)
             if all(nf==nfh)
                 flag=0;
-%                m(j,:)
+                m(j,:)
             else
                 j=j+1;
             end

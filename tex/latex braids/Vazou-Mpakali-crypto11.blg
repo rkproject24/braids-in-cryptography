@@ -1,0 +1,56 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: Vazou-Mpakali-crypto11.aux
+The style file: alpha.bst
+Database file #1: refs.bib
+Name 1 in "J. W. Cannon, W. J. Floyd, and W. R. Parry" has a comma at the end for entry tom
+while executing---line 1185 of file alpha.bst
+Name 1 in "J. W. Cannon, W. J. Floyd, and W. R. Parry" has a comma at the end for entry tom
+while executing---line 1185 of file alpha.bst
+Warning--empty journal in Anshel99analgebraic
+Warning--empty journal in basic
+Warning--empty journal in normaf
+Warning--empty year in normaf
+Name 1 in "J. W. Cannon, W. J. Floyd, and W. R. Parry" has a comma at the end for entry tom
+while executing---line 1250 of file alpha.bst
+You've used 12 entries,
+            2543 wiz_defined-function locations,
+            620 strings with 6115 characters,
+and the built_in function-call counts, 4611 in all, are:
+= -- 450
+> -- 238
+< -- 6
++ -- 81
+- -- 80
+* -- 305
+:= -- 771
+add.period$ -- 35
+call.type$ -- 12
+change.case$ -- 77
+chr.to.int$ -- 12
+cite$ -- 16
+duplicate$ -- 184
+empty$ -- 327
+format.name$ -- 93
+if$ -- 936
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 10
+newline$ -- 61
+num.names$ -- 36
+pop$ -- 93
+preamble$ -- 1
+purify$ -- 90
+quote$ -- 0
+skip$ -- 161
+stack$ -- 0
+substring$ -- 199
+swap$ -- 29
+text.length$ -- 6
+text.prefix$ -- 3
+top$ -- 0
+type$ -- 92
+warning$ -- 4
+while$ -- 42
+width$ -- 15
+write$ -- 145
+(There were 3 error messages)

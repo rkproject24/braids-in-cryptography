@@ -1,0 +1,70 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% Αλλάξτε τις παρακάτω μεταβλητές ανάλογα:
+%%%
+\newcommand{\ONOMA}{Νίκη Βάζου, Ελένη Μπακάλη}
+\newcommand{\DATE}{\today}
+\newcommand{\THEMA}{Θεωρία Ομάδων στην Κρυπτογραφία}
+\newcommand{\YPOTITLOS}{Μεταπτυχιακή Εργασία για το μάθημα Κρυπτογραφία και Μαθηματικά.}
+\newcommand{\LOGO}{mplablue.png}
+\newcommand{\INPUTFILE}{Vazou-Mpakali-Crypto11-Input.tex}
+\newcommand{\INPUTCODE}{code.tex}
+%%%
+%%% Μην Αλλάξετε τίποτε άλλο παρακάτω!
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{CryptoPreambleErg_gr.tex}
+%Fancy Header specifications  **Need to put in each Handout ***
+\renewcommand{\headrulewidth}{0.5pt}
+\cfoot{\thepage}
+\rfoot{}
+\pagestyle{fancy}
+%
+\usepackage{comments}
+\usepackage{color}
+% Greek fonts
+%\RequirePackage[cm-default]{fontspec}
+\defaultfontfeatures{Mapping=tex-text}
+  % you may want to try: {FreeSerif} or {Times New Roman}
+\setmainfont{Ubuntu}
+  % you may want to try: {FreeSans} or {Arial}
+\setsansfont[Scale=MatchLowercase]{FreeMono}
+  % you may want to try: {FreeMono} or {Courier New}
+\setmonofont[Scale=MatchLowercase]{Liberation Mono}
+\newcommand\ntext[1]{\ensuremath{\text{\textit{#1}}}}
+\usepackage{listings}
+\lstset{language=Matlab,
+        numbers=left, numberstyle=\tiny,
+        basicstyle=\ttfamily\footnotesize,
+        keywordstyle=\bfseries,
+        %basewidth=0.51em,
+        xleftmargin=10pt,
+        showspaces=false,
+        breaklines,
+        showstringspaces=false,
+        breakatwhitespace=true,
+        captionpos=b,
+        breakindent=34.25ex,
+        belowskip=5pt,
+        escapeinside={@}{@}
+        }
+
+\usepackage{enumerate}
+
+\hyphenation{μη-αντι-με-τα-θε-τι-κό-τη-τας}
+%
+\begin{document}
+\maketitle
+
+\doheader
+
+\input{\INPUTFILE}
+\input{\INPUTCODE}
+\input{concl}
+   
+\bibliographystyle{alpha}
+\bibliography{refs}
+
+\end{document}
+
