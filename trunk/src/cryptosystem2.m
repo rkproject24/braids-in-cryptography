@@ -11,8 +11,8 @@ data=s.dataN3;
 dflag=0;
 n=data.n;
 prmdata=data.data;
-k=randi(10,1,1);
-m=randi(10,1,1);
+k=20; %randi(10,1,1);
+m=20; %randi(10,1,1);
 a=randi(2*n-2,k,3)-n+1;
 b=randi(2*n-2,m,3)-n+1;
 
